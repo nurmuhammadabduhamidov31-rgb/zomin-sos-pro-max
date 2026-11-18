@@ -1,31 +1,47 @@
-function getLocation() {
+
+async function sendSOS() {
     const result = document.getElementById("result");
 
+    result.innerText = "📡 GPS aniqlanmoqda...";
+
     if (!navigator.geolocation) {
-        result.innerText = "GPS qo‘llab-quvvatlanmaydi!";
+        result.innerText = "GPS mavjud emas!";
         return;
     }
 
-    result.innerText = "Joylashuv aniqlanmoqda...";
-
     navigator.geolocation.getCurrentPosition(
-        function(position) {
+        async function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            result.innerHTML =
-                "📍 Joylashuv aniqlandi!<br>" +
-                "Kenglik: " + lat + "<br>" +
-                "Uzunlik: " + lon +
-                '<br><a style="color:#00ff88" target="_blank" href="https://maps.google.com/?q=' +
-                lat + ',' + lon + '">Xaritada ko‘rish</a>';
+            try {
+                const response = await fetch("/sos", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        latitude: lat,
+                        longitude: lon
+                    })
+                });
+
+                const data = await response.json();
+
+                result.innerHTML =
+                    "✅ SOS sinov signali qabul qilindi!<br>" +
+                    "📍 " + lat + ", " + lon +
+                    "<br><a target='_blank' href='https://maps.google.com/?q=" +
+                    lat + "," + lon +
+                    "'>Xaritada ko‘rish</a>";
+
+            } catch (error) {
+                result.innerText = "Server bilan aloqa yo‘q!";
+            }
         },
         function() {
-            result.innerText = "GPS ruxsati berilmadi!";
-        }
+            result.innerText = "GPS ruxsatini yoqing!";
+        },
+        { enableHighAccuracy: true, timeout: 15000 }
     );
 }
-<button onclick="getLocation()"
-style="width:190px;height:65px;font-size:18px;background:#1677ff;border:0;border-radius:12px;">
-📍 GPS JOYLASHUV
-</button>

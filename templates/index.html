@@ -1,61 +1,27 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ZOMIN SOS PRO MAX</title>
-<style>
-body {
-    background:#101820;
-    color:white;
-    text-align:center;
-    font-family:Arial;
-    padding:25px;
-}
-h1 {color:#ff3333;}
-button {
-    width:190px;
-    height:190px;
-    border-radius:50%;
-    background:red;
-    color:white;
-    font-size:40px;
-    font-weight:bold;
-    border:8px solid white;
-    margin:40px;
-}
-#result {color:#00ff88;}
-</style>
-</head>
-<body>
+function getLocation() {
+    const result = document.getElementById("result");
 
-<h1>🚨 ZOMIN SOS PRO MAX</h1>
-<p>Favqulodda yordam tizimi</p>
-
-<button onclick="sendSOS()">SOS</button>
-
-<p id="result">Tizim tayyor</p>
-
-<script>
-async function sendSOS() {
-    document.getElementById("result").innerText =
-        "SOS signali yuborilmoqda...";
-
-    try {
-        let response = await fetch("/sos", {
-            method: "POST"
-        });
-
-        let data = await response.json();
-
-        document.getElementById("result").innerText =
-            data.message;
-    } catch (error) {
-        document.getElementById("result").innerText =
-            "Server bilan aloqa yo‘q!";
+    if (!navigator.geolocation) {
+        result.innerText = "GPS qo‘llab-quvvatlanmaydi!";
+        return;
     }
-}
-</script>
 
-</body>
-</html>
+    result.innerText = "Joylashuv aniqlanmoqda...";
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            result.innerHTML =
+                "📍 Joylashuv aniqlandi!<br>" +
+                "Kenglik: " + lat + "<br>" +
+                "Uzunlik: " + lon +
+                '<br><a style="color:#00ff88" target="_blank" href="https://maps.google.com/?q=' +
+                lat + ',' + lon + '">Xaritada ko‘rish</a>';
+        },
+        function() {
+            result.innerText = "GPS ruxsati berilmadi!";
+        }
+    );
+}

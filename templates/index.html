@@ -13,6 +13,39 @@ async function sendSOS() {
         async function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
+function sendSMS() {
+    const phone = document.getElementById("phone").value;
+
+    if (!phone) {
+        alert("Telefon raqamini kiriting!");
+        return;
+    }
+
+    if (!navigator.geolocation) {
+        alert("GPS mavjud emas!");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const message =
+                "ZOMIN SOS PRO MAX! YORDAM KERAK! " +
+                "Mening joylashuvim: " +
+                "https://maps.google.com/?q=" +
+                lat + "," + lon;
+
+            window.location.href =
+                "sms:" + phone + "?body=" +
+                encodeURIComponent(message);
+        },
+        function() {
+            alert("GPS ruxsatini yoqing!");
+        }
+    );
+}
 
             try {
                 const response = await fetch("/sos", {

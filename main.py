@@ -17,6 +17,7 @@ def home():
 def status():
     return jsonify({
         "app": "ZOMIN SOS PRO MAX",
+
         "status": "working"
     })
 

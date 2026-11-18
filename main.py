@@ -1,24 +1,23 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return """
-    <h1>🚨 ZOMIN SOS PRO MAX</h1>
-    <h2>Yordam tizimi ishga tushdi!</h2>
-    <p>Favqulodda yordam platformasi</p>
-    <button onclick="alert('SOS signali tayyor!')">
-        🆘 SOS
-    </button>
-    """
+    return render_template("index.html")
 
 @app.route("/status")
 def status():
     return jsonify({
         "app": "ZOMIN SOS PRO MAX",
+        "status": "online"
+    })
 
-        "status": "working"
+@app.route("/sos", methods=["POST"])
+def sos():
+    return jsonify({
+        "message": "SOS signal qabul qilindi",
+        "status": "received"
     })
 
 if __name__ == "__main__":

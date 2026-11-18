@@ -89,3 +89,39 @@ style="padding:15px;width:85%;border-radius:10px;"
 style="width:190px;height:65px;font-size:18px;background:#168a45;border:0;border-radius:12px;">
 📩 SMS YUBORISH
 </button>
+<input id="phone1" type="tel"
+placeholder="Yaqinlaringiz raqami">
+
+<br><br>
+
+<input id="phone2" type="tel"
+placeholder="Yordam markazi raqami">
+
+<br><br>
+
+<button onclick="sendBothSMS()">
+📩 IKKALASIGA SMS YUBORISH
+</button>
+function sendBothSMS() {
+    const p1 = document.getElementById("phone1").value;
+    const p2 = document.getElementById("phone2").value;
+
+    if (!p1 || !p2) {
+        alert("Ikkala raqamni ham kiriting!");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        const msg = encodeURIComponent(
+            "ZOMIN SOS PRO MAX! YORDAM KERAK! " +
+            "Joylashuv: https://maps.google.com/?q=" +
+            lat + "," + lon
+        );
+
+        window.location.href =
+            "sms:" + p1 + "," + p2 + "?body=" + msg;
+    });
+}
